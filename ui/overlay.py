@@ -1,13 +1,23 @@
 import cv2
 
-def draw_warning(frame, x, y, text):
-    cv2.circle(frame, (int(x), int(y)), 12, (0, 0, 255), -1)
+
+def draw_status(frame, score, feedback):
     cv2.putText(
         frame,
-        text,
-        (int(x) + 10, int(y) - 10),
+        f"Score: {score}",
+        (30, 40),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.6,
-        (0, 0, 255),
+        1,
+        (0, 255, 0),
+        2
+    )
+
+    cv2.putText(
+        frame,
+        feedback,
+        (30, 80),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (255, 255, 0),
         2
     )

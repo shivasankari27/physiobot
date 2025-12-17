@@ -1,41 +1,37 @@
-import numpy as np
 import math
 
-LEFT_SHOULDER = 11
-LEFT_ELBOW = 13
-LEFT_WRIST = 15
-RIGHT_SHOULDER = 12
-RIGHT_HIP = 24
 
-def angle(a, b, c):
-    a, b, c = np.array(a), np.array(b), np.array(c)
-    ba = a - b
-    bc = c - b
-    cosine = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc) + 1e-6)
-    return np.degrees(np.arccos(np.clip(cosine, -1.0, 1.0)))
+def calculate_angle(a, b, c):
+    """
+    Returns angle (in degrees) at point b given three landmarks.
+    """
+    ba = (a.x - b.x, a.y - b.y)
+    bc = (c.x - b.x, c.y - b.y)
+
+    dot = ba[0] * bc[0] + ba[1] * bc[1]
+    mag_ba = math.sqrt(ba[0] ** 2 + ba[1] ** 2)
+    mag_bc = math.sqrt(bc[0] ** 2 + bc[1] ** 2)
+
+    if mag_ba * mag_bc == 0:
+        return 0
+
+    angle = math.degrees(math.acos(dot / (mag_ba * mag_bc)))
+    return angle
+
 
 def extract_features(landmarks):
-    ls = landmarks[LEFT_SHOULDER]
-    le = landmarks[LEFT_ELBOW]
-    lw = landmarks[LEFT_WRIST]
-    rs = landmarks[RIGHT_SHOULDER]
+    """
+    Extracts biomechanical features required for evaluation.
+    """
+    shoulder = landmarks[11]
+    elbow = landmarks[13]
+    wrist = landmarks[15]
+    hip = landmarks[23]
 
-    arm_angle = angle(
-        [le.x, le.y],
-        [ls.x, ls.y],
-        [rs.x, rs.y]
-    )
-
-    elbow_angle = angle(
-        [ls.x, ls.y],
-        [le.x, le.y],
-        [lw.x, lw.y]
-    )
-
-    shoulder_tilt = abs(ls.y - rs.y)
+    arm_angle = calculate_angle(hip, shoulder, elbow)
+    elbow_angle = calculate_angle(shoulder, elbow, wrist)
 
     return {
         "arm_angle": arm_angle,
-        "elbow_angle": elbow_angle,
-        "shoulder_tilt": shoulder_tilt
+        "elbow_angle": elbow_angle
     }

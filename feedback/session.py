@@ -1,25 +1,18 @@
 class SessionTracker:
-    def __init__(self, alpha=0.3):
-        self.alpha = alpha
-        self.smoothed_score = None
+    def __init__(self):
         self.history = []
 
     def update(self, score):
-        if self.smoothed_score is None:
-            self.smoothed_score = score
-        else:
-            self.smoothed_score = (
-                self.alpha * score + (1 - self.alpha) * self.smoothed_score
-            )
-        self.history.append(self.smoothed_score)
-        return self.smoothed_score
+        self.history.append(score)
+        if len(self.history) > 30:
+            self.history.pop(0)
 
     def trend(self):
-        if len(self.history) < 5:
-            return "warming up"
-        delta = self.history[-1] - self.history[-5]
-        if delta > 5:
+        if len(self.history) < 2:
+            return "stable"
+
+        if self.history[-1] > self.history[0]:
             return "improving"
-        elif delta < -5:
+        elif self.history[-1] < self.history[0]:
             return "declining"
         return "stable"
