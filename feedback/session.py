@@ -1,18 +1,61 @@
-class SessionTracker:  
-    def __init__(self):  
-        self.history = []  
-  
-    def update(self, score):  
-        self.history.append(score)  
-        if len(self.history) > 30:  
-            self.history.pop(0)  
-  
-    def trend(self):  
-        if len(self.history) < 2:  
-            return "stable"  
-  
-        if self.history[-1] > self.history[0]:  
-            return "improving"  
-        elif self.history[-1] < self.history[0]:  
-            return "declining"  
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+from config import DATA_DIR, SESSION_HISTORY_SIZE, TREND_THRESHOLD, TREND_WINDOW
+
+
+class SessionTracker:
+    def __init__(self, exercise_key: str, max_history: int = SESSION_HISTORY_SIZE):
+        self.exercise_key = exercise_key
+        self.max_history = max_history
+        self.history: list[int] = []
+        self.started_at = datetime.now(timezone.utc)
+
+    def update(self, score: int) -> None:
+        self.history.append(score)
+        if len(self.history) > self.max_history:
+            self.history.pop(0)
+
+    def average_score(self) -> float | None:
+        if not self.history:
+            return None
+        return sum(self.history) / len(self.history)
+
+    def trend(self) -> str:
+        window = TREND_WINDOW * 2
+        if len(self.history) < window:
+            return "stable"
+
+        recent = self.history[-TREND_WINDOW:]
+        earlier = self.history[-window:-TREND_WINDOW]
+
+        recent_mean = sum(recent) / len(recent)
+        earlier_mean = sum(earlier) / len(earlier)
+        diff = recent_mean - earlier_mean
+
+        if diff > TREND_THRESHOLD:
+            return "improving"
+        if diff < -TREND_THRESHOLD:
+            return "declining"
         return "stable"
+
+    def save(self) -> Path | None:
+        if not self.history:
+            return None
+
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        timestamp = self.started_at.strftime("%Y%m%d_%H%M%S")
+        path = DATA_DIR / f"session_{self.exercise_key}_{timestamp}.json"
+
+        payload = {
+            "exercise": self.exercise_key,
+            "started_at": self.started_at.isoformat(),
+            "ended_at": datetime.now(timezone.utc).isoformat(),
+            "scores": self.history,
+            "average_score": self.average_score(),
+            "trend": self.trend(),
+        }
+
+        path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        return path

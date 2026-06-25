@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "physiobot"
+version = "1.0.0"
+description = "Safety-aware rehabilitation movement quality assessment"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "opencv-python>=4.8.0,<5.0.0",
+    "mediapipe>=0.10.0,<0.11.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0,<9.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["pose*", "feedback*", "ui*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
