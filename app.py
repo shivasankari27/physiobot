@@ -41,7 +41,7 @@ def main():
   
             draw_status(frame, score, feedback, trend)  
   
-
+            # Safety override  
             if danger:  
                 cv2.putText(  
                     frame,  
