@@ -29,10 +29,10 @@ def quality_score(features: dict, exercise: ExerciseConfig) -> int:
 
 def feedback_text(score: int) -> str:
     if score > 85:
-        return "Good form — maintain posture"
+        return "Good form - maintain posture"
     if score > 65:
         return "Adjust alignment slightly"
-    return "Poor form — correct posture"
+    return "Poor form - correct posture"
 
 
 def danger_detected(features: dict, exercise: ExerciseConfig) -> str | None:
