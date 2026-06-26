@@ -59,7 +59,7 @@ python app.py --exercise bicep_curl --camera 0 --arm left
 
 ### On-screen display
 
-- Quality score (0–100)
+- Quality score (0–100) in green / orange / red based on performance
 - Form feedback message
 - Performance trend (improving / stable / declining)
 - Active exercise and tracked arm
@@ -72,61 +72,3 @@ pytest
 ```
 
 ## Project structure
-
-```
-physiobot/
-├── app.py                 # Entry point and CLI
-├── config.py              # Exercise configs, thresholds, constants
-├── pose/
-│   ├── estimator.py       # MediaPipe pose wrapper
-│   └── features.py        # Angle math and bilateral feature extraction
-├── feedback/
-│   ├── rules.py           # Scoring, feedback, and danger detection
-│   └── session.py         # Trend analysis and session persistence
-├── ui/
-│   └── overlay.py         # Unified on-screen status rendering
-├── tests/
-│   ├── test_features.py
-│   ├── test_rules.py
-│   └── test_session.py
-├── requirements.txt
-└── pyproject.toml
-```
-
-## Biomechanical assessment
-
-The system evaluates two angles for the active arm:
-
-| Angle | Definition | Arm raise ideal |
-|-------|------------|-----------------|
-| **Arm angle** | Hip–shoulder–elbow at the shoulder | > 70° |
-| **Elbow angle** | Shoulder–elbow–wrist at the elbow | > 160° (extended) |
-
-Bicep curl mode uses flexion-based elbow scoring and different danger thresholds.
-
-## Configuration
-
-Exercise thresholds live in `config.py` under `EXERCISES`. Each `ExerciseConfig` defines:
-
-- Ideal angle thresholds and scoring weights
-- Danger-zone cutoffs for safety warnings
-- Elbow scoring mode (`extension` or `flexion`)
-
-## Session data
-
-On quit, sessions are saved as JSON:
-
-```json
-{
-  "exercise": "arm_raise",
-  "started_at": "2026-06-25T12:00:00+00:00",
-  "ended_at": "2026-06-25T12:05:00+00:00",
-  "scores": [85, 88, 90],
-  "average_score": 87.67,
-  "trend": "improving"
-}
-```
-
-## Disclaimer
-
-PhysioBot is a demonstration tool for movement feedback. It is not a medical device and does not replace professional physical therapy guidance.
