@@ -60,13 +60,12 @@ def test_detect_active_side_honors_fixed_preference():
 
 
 def test_extract_features_returns_angles_and_side():
-    # Left arm extended horizontally: hip below shoulder, elbow and wrist to the side
     landmarks = make_landmarks(
         {
-            23: MockLandmark(0.5, 0.8),   # left hip
-            11: MockLandmark(0.5, 0.5),   # left shoulder
-            13: MockLandmark(0.2, 0.5),   # left elbow
-            15: MockLandmark(0.0, 0.5),   # left wrist
+            23: MockLandmark(0.5, 0.8),  # left hip
+            11: MockLandmark(0.5, 0.5),  # left shoulder
+            13: MockLandmark(0.2, 0.5),  # left elbow
+            15: MockLandmark(0.0, 0.5),  # left wrist
         }
     )
     features = extract_features(landmarks, side="left")
