@@ -34,13 +34,17 @@ def test_feedback_text_tiers():
     assert "Poor" in feedback_text(50)
 
 
-def test_danger_detected_arm_raise():
+def test_danger_detected_safe_returns_none():
     safe = {"arm_angle": 50, "elbow_angle": 130}
     assert danger_detected(safe, ARM_RAISE) is None
 
+
+def test_danger_detected_unsafe_arm():
     unsafe_arm = {"arm_angle": 30, "elbow_angle": 170}
     assert danger_detected(unsafe_arm, ARM_RAISE) is not None
 
+
+def test_danger_detected_unsafe_elbow():
     unsafe_elbow = {"arm_angle": 80, "elbow_angle": 100}
     assert "elbow" in danger_detected(unsafe_elbow, ARM_RAISE).lower()
 
