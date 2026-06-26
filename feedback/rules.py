@@ -15,11 +15,14 @@ def quality_score(features: dict, exercise: ExerciseConfig) -> int:
 
     if exercise.elbow_scoring == "extension":
         if elbow_angle < exercise.elbow_angle_threshold:
-            score -= (exercise.elbow_angle_threshold - elbow_angle) * exercise.elbow_angle_weight
+            score -= (
+                exercise.elbow_angle_threshold - elbow_angle
+            ) * exercise.elbow_angle_weight
     else:
-        # Flexion exercises: penalize insufficient curl depth
         if elbow_angle > exercise.elbow_angle_threshold:
-            score -= (elbow_angle - exercise.elbow_angle_threshold) * exercise.elbow_angle_weight
+            score -= (
+                elbow_angle - exercise.elbow_angle_threshold
+            ) * exercise.elbow_angle_weight
 
     return max(0, int(score))
 
