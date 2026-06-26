@@ -7,11 +7,12 @@ A computer vision rehabilitation assistant that scores movement quality in real 
 - **Real-time pose estimation** — MediaPipe skeletal tracking with biomechanical angle analysis
 - **Exercise modes** — Arm raise and bicep curl with per-exercise thresholds and scoring
 - **Bilateral support** — Track left or right arm, or auto-select the side with better visibility
-- **Quality scoring** — 0–100 form score with contextual feedback messages
+- **Quality scoring** — 0-100 form score with contextual feedback messages
 - **Safety override** — Immediate warnings when angles enter injury-risk zones
 - **Session tracking** — Rolling-mean trend analysis over a sliding window of scores
 - **Session persistence** — JSON session logs saved on quit to `data/sessions/`
 - **CLI configuration** — Camera index, exercise, and arm side via command-line flags
+- **Rep counter** — Automatically counts full range-of-motion repetitions per session
 - **Test suite** — Pytest coverage for angle math, scoring rules, and session logic
 
 ## Installation
@@ -59,11 +60,16 @@ python app.py --exercise bicep_curl --camera 0 --arm left
 
 ### On-screen display
 
-- Quality score (0–100) in green / orange / red based on performance
+- Quality score (0-100) in green / orange / red based on performance
 - Form feedback message
 - Performance trend (improving / stable / declining)
+- Rep count (increments on each completed full range-of-motion cycle)
 - Active exercise and tracked arm
 - Red safety warning when danger thresholds are breached
+
+## How the rep counter works
+
+A rep is counted when your score rises **above 75** (good form at top of movement) and then falls **below 40** (back to rest position). That full cycle = 1 rep. This ensures only quality repetitions are counted — sloppy form does not increment the counter.
 
 ## Testing
 
@@ -105,12 +111,13 @@ physiobot/
 ├── requirements.txt
 
 └── pyproject.toml
+
 ## Biomechanical assessment
 
 | Angle | Definition | Arm raise ideal |
 |-------|------------|-----------------|
-| **Arm angle** | Hip–shoulder–elbow at the shoulder | > 70° |
-| **Elbow angle** | Shoulder–elbow–wrist at the elbow | > 160° (extended) |
+| **Arm angle** | Hip-shoulder-elbow at the shoulder | > 70° |
+| **Elbow angle** | Shoulder-elbow-wrist at the elbow | > 160° (extended) |
 
 Bicep curl mode uses flexion-based elbow scoring and different danger thresholds.
 
@@ -133,7 +140,8 @@ On quit, sessions are saved as JSON:
   "ended_at": "2026-06-25T12:05:00+00:00",
   "scores": [85, 88, 90],
   "average_score": 87.67,
-  "trend": "improving"
+  "trend": "improving",
+  "reps": 5
 }
 ```
 
