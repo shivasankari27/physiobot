@@ -50,6 +50,6 @@ WINDOW_TITLE = "PhysioBot — Safety-Aware Rehab Intelligence"
 
 # MediaPipe pose landmark indices
 LANDMARKS = {
-    "left": {"shoulder": 11, "elbow": 13, "wrist": 15, "hip": 23},
+    "left":  {"shoulder": 11, "elbow": 13, "wrist": 15, "hip": 23},
     "right": {"shoulder": 12, "elbow": 14, "wrist": 16, "hip": 24},
 }
