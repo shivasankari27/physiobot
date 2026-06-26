@@ -5,6 +5,14 @@ import cv2
 Color = tuple[int, int, int]
 
 
+def _score_color(score: int) -> Color:
+    if score > 85:
+        return (0, 255, 0)    # green
+    if score > 65:
+        return (0, 165, 255)  # orange
+    return (0, 0, 255)        # red
+
+
 def draw_status(
     frame: Any,
     score: int,
@@ -21,7 +29,7 @@ def draw_status(
         (30, 40),
         cv2.FONT_HERSHEY_SIMPLEX,
         1,
-        (0, 255, 0),
+        _score_color(score),
         2,
     )
 
