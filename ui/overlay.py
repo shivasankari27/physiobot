@@ -21,8 +21,9 @@ def draw_status(
     exercise_name: str | None = None,
     side: str | None = None,
     danger: str | None = None,
+    reps: int = 0,
 ) -> None:
-    """Render score, feedback, trend, exercise context, and safety warnings."""
+    """Render score, feedback, trend, reps, exercise context, and safety warnings."""
     cv2.putText(
         frame,
         f"Score: {score}",
@@ -53,6 +54,16 @@ def draw_status(
         2,
     )
 
+    cv2.putText(
+        frame,
+        f"Reps: {reps}",
+        (30, 160),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.9,
+        (0, 255, 255),
+        2,
+    )
+
     if exercise_name:
         context = exercise_name
         if side:
@@ -71,7 +82,7 @@ def draw_status(
         cv2.putText(
             frame,
             danger,
-            (30, 160),
+            (30, 200),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.8,
             (0, 0, 255),
