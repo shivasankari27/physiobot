@@ -13,7 +13,7 @@ from ui.overlay import draw_status
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="PhysioBot — real-time rehab movement quality assessment"
+        description="PhysioBot - real-time rehab movement quality assessment"
     )
     parser.add_argument(
         "--camera",
@@ -48,7 +48,7 @@ def main(argv: list[str] | None = None) -> int:
     pose = PoseEstimator()
     tracker = SessionTracker(exercise_key=args.exercise)
 
-    print(f"PhysioBot ready — {exercise.name} | camera {args.camera} | arm {args.arm}")
+    print(f"PhysioBot ready - {exercise.name} | camera {args.camera} | arm {args.arm}")
     print("Press 'q' to quit and save session.")
 
     try:
@@ -84,6 +84,7 @@ def main(argv: list[str] | None = None) -> int:
                     exercise_name=exercise.name,
                     side=str(features["side"]),
                     danger=danger,
+                    reps=tracker.reps(),
                 )
 
             cv2.imshow(WINDOW_TITLE, frame)
@@ -97,6 +98,7 @@ def main(argv: list[str] | None = None) -> int:
         saved = tracker.save()
         if saved:
             print(f"Session saved to {saved}")
+            print(f"Total reps: {tracker.reps()}")
 
     return 0
 
